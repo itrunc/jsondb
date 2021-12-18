@@ -7,7 +7,7 @@
   "scripts": {
     "test": "mocha tests/**/*.test.js --reporter mochawesome --reporter-options reportDir=tests/results/general,reportFilename=report --exit",
     "test:single": "mocha tests/index.js --reporter mochawesome --reporter-options reportDir=tests/results/single,reportFilename=report --exit",
-    "docs": "jsdoc2md -c jsdoc.json lib/*.js > docs/api_reference.md",
+    "docs": "jsdoc2md -c jsdoc.json lib/*.js > README.md",
     "pub": "npm publish --access public"
   },
   "repository": {
