@@ -24,6 +24,7 @@ describe('Model', function() {
     
     it('should validate key correctly', () => {
       expect(keyValidate(key)).to.be.true
+      expect(keyValidate('test<>')).to.be.false
     })
 
     // describe('#set', () => {

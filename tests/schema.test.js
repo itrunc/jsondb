@@ -1,4 +1,3 @@
-process.env.DEBUG = '*'
 const path = require('path')
 const fs2 = require('fs-extra')
 const { expect } = require('chai')

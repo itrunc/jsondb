@@ -1,4 +1,3 @@
-process.env.DEBUG = '*'
 const path = require('path')
 const fs2 = require('fs-extra')
 const { expect } = require('chai')
@@ -16,9 +15,20 @@ describe('Model', function() {
         rules: {
             name: [{ required: true }]
         },
-        indexes: ['name']
+        indexes: ['role']
     })
     const key = Mock.mock('@word(10)')
+    const data = Mock.mock({
+        'items|10000': [{
+            id: '@word(8)',
+            name: '@first @last',
+            role: '@pick(["Developer", "Admin"])'
+        }],
+        'fail|10': [{
+            id: '@word(8)',
+            role: '@pick(["Developer", "Admin"])'
+        }]
+    })
 
     describe('#constructor', () => {
         it(`should create an instance of model as well as the folder ${folder}`, () => {
@@ -79,6 +89,18 @@ describe('Model', function() {
         })
     })
 
+    describe('#mset', () => {
+        it('should bulk set data correctly', (done) => {
+            model.mset(data.items.concat(data.fail)).then(result => {
+                expect(result).to.be.an('object').that.to.have.all.keys(['success', 'failure'])
+                expect(result.success).to.be.an('array').that.to.have.lengthOf(10000)
+                expect(result.failure).to.be.an('array').that.to.have.lengthOf(10)
+                expect(model.count).to.be.an('number').that.to.be.gt(10000)
+                done()
+            }).catch(done)
+        })
+    })
+
     describe('#count', () => {
         it('should return count of objects correctly', () => {
             expect(model.count).to.be.a('number')
@@ -121,92 +143,51 @@ describe('Model', function() {
         })
     })
 
-    // describe('#del', () => {
-    //     const key = Mock.mock('@word(10)')
-    //     const savedData = Mock.mock({
-    //         id: key,
-    //         name: '@first @last',
-    //         role: '@pick(["Developer", "Admin"])'
-    //     })
-    //     model.set(key, savedData)
-    //     const filePath = path.resolve(model.folder, `${key.toLowerCase().trim()}.json`)
-    //     it('should delete JSON file correctly', () => {
-    //         const exists = model.has(key)
-    //         expect(exists).to.be.true
-    //         const before = model.get(key)
-    //         expect(before).to.be.an('object').that.not.to.be.null
-    //         const beforeCount = model.count()
-    //         model.del(key)
-    //         const afterCount = model.count()
-    //         expect(afterCount).to.be.a('number').that.to.equal(beforeCount - 1)
-    //         const afterExists = model.has(key)
-    //         expect(afterExists).to.be.false
-    //         const fileExists = fs2.pathExistsSync(filePath)
-    //         expect(fileExists).to.be.false
-    //     })
-    // })
+    describe('#find', () => {
+        it('should return data if found', () => {
+            const data = model.find(item => /admin/i.test(item.role))
+            expect(data).to.be.an('object').that.to.have.all.keys(['id', 'data', 'index'])
+        })
+        it('should return null if not found', () => {
+            const data = model.find(item => item.id === 'ttt')
+            expect(data).to.be.null
+        })
+    })
 
-    // describe('#find', () => {
-    //     it('should return data if found', () => {
-    //         const data = model.find(item => item.id === key)
-    //         expect(data).to.be.an('object').that.not.to.be.null
-    //     })
-    //     it('should return null if not found', () => {
-    //         const data = model.find(item => item.id === 'ttt')
-    //         expect(data).to.be.null
-    //     })
-    // })
+    describe('#findAll', () => {
+        it('should return all objects correctly', () => {
+            const result = model.findAll()
+            expect(result).to.be.an('array').that.to.have.lengthOf(model.count)
+        })
+        it('should return items with correct data format', () => {
+            const result = model.findAll(item => /admin/i.test(item.role), { limit: 3 })
+            expect(result).to.be.an('array').that.to.have.lengthOf(3)
+            expect(result[0]).to.be.an('object').that.to.have.all.keys(['id', 'data', 'index'])
+        })
+        it('should returm empty array if not found', () => {
+            const result = model.findAll(item => item.id === 'ttt')
+            expect(result).to.be.an('array').that.to.be.empty
+        })
+    })
 
-    // describe('#mset', () => {
-    //     const data = Mock.mock('@sentence(10)').split(' ').reduce((acc, cur) => {
-    //         const id = Mock.mock('@word(10)')
-    //         const role = Mock.mock('@pick(["Developer", "Admin"])')
-    //         acc[id] = Mock.mock({
-    //             value: {
-    //                 id,
-    //                 name: '@first @last',
-    //                 role
-    //             },
-    //             index: {
-    //                 role
-    //             }
-    //         })
-    //         return acc
-    //     }, {})
-    //     it('should bulk set data correctly', () => {
-    //         model.mset(data)
-    //         const count = model.count()
-    //         expect(count).to.be.above(Object.keys(data).length)
-    //         for(const key of Object.keys(data)) {
-    //             const item = model.get(key)
-    //             expect(item).to.be.an('object').that.not.to.be.null
-    //             expect(item.id).to.equal(data[key].value.id)
-    //             expect(item.name).to.equal(data[key].value.name)
-    //             expect(item.role).to.equal(data[key].value.role)
-    //             const meta = model.meta.data[key]
-    //             expect(meta).to.be.an('object').that.to.have.all.keys(['role'])
-    //             expect(meta.role).to.equal(data[key].value.role)
-    //         }
-    //     })
-    // })
-
-    // describe('#findAll', () => {
-    //     it('should return all objects correctly', () => {
-    //         const result = model.findAll()
-    //         expect(result).to.be.an('array').that.to.have.lengthOf(model.count())
-    //     })
-    //     it('should return items with correct data format', () => {
-    //         const result = model.findAll(item => item.id === key)
-    //         expect(result).to.be.an('array').that.to.have.lengthOf(1)
-    //         expect(result[0]).to.be.an('object').that.to.have.all.keys(['id', 'data', 'options'])
-
-    //         const result2 = model.findAll(item => item, { limit: 3 })
-    //         expect(result2).to.be.an('array').that.to.have.lengthOf(3)
-    //     })
-    //     it('should returm empty array if not found', () => {
-    //         const result = model.findAll(item => item.id === 'ttt')
-    //         expect(result).to.be.an('array').that.to.be.empty
-    //     })
-
-    // })
+    describe('#del', () => {
+        it('should delete JSON file correctly', (done) => {
+            const key = data.items[100].id
+            const exists = model.has(key)
+            expect(exists).to.be.true
+            const count = model.count
+            const filePath = model.getFilePath(key)
+            const fileExists = fs2.pathExistsSync(filePath)
+            expect(fileExists).to.be.true
+            model.del(key).then(item => {
+                expect(item).to.be.an('object').that.to.have.all.keys(['name', 'role', 'createdAt', 'updatedAt'])
+                const exists = model.has(key)
+                expect(exists).to.be.false
+                expect(model.count).to.be.equal(count - 1)
+                const fileExists = fs2.pathExistsSync(filePath)
+                expect(fileExists).to.be.false
+                done()
+            }).catch(done)
+        })
+    })
 })
