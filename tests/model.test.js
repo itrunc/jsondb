@@ -143,6 +143,18 @@ describe('Model', function() {
         })
     })
 
+    describe('#mget', () => {
+        const keys = ['test'].concat([data.items[0].id]).concat([data.fail[0].id])
+        it('should list of objects correctly', () => {
+            const result = model.mget(keys)
+            expect(result).to.be.an('object').that.to.have.all.keys(['success', 'failure'])
+            expect(result.success).to.be.an('array').that.to.have.lengthOf(1)
+            expect(result.success[0]).to.be.an('object').that.to.have.any.keys(['id'])
+            expect(result.success[0].id).to.be.equal(data.items[0].id)
+            expect(result.failure).to.be.an('array').that.to.have.members(['test', data.fail[0].id])
+        })
+    })
+
     describe('#find', () => {
         it('should return data if found', () => {
             const data = model.find(item => /admin/i.test(item.role))
