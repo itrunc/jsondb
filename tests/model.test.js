@@ -193,6 +193,14 @@ describe('Model', function() {
         })
     })
 
+    describe('#keysOf', () => {
+        it('should return keys of items with role as admin', () => {
+            const keys = model.keysOf(item => /admin/i.test(item.role))
+            const count = model.countOf(item => /admin/i.test(item.role))
+            expect(keys).to.be.an('array').that.to.have.lengthOf(count)
+        })
+    })
+
     describe('#del', () => {
         it('should delete JSON file correctly', (done) => {
             const key = data.items[100].id

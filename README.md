@@ -46,6 +46,7 @@ Create / Get a model
     * [.set(key, value, options)](#Model+set)
     * [.find(comparator)](#Model+find) ⇒ [<code>ModelFindReturns</code>](#ModelFindReturns) \| <code>null</code>
     * [.findAll(comparator, options)](#Model+findAll) ⇒ [<code>Array.&lt;ModelFindReturns&gt;</code>](#ModelFindReturns)
+    * [.keysOf(comparator)](#Model+keysOf) ⇒ <code>array</code>
     * [.countOf(comparator)](#Model+countOf) ⇒ <code>number</code>
     * [.mset(data, options)](#Model+mset)
     * [.del(key, options)](#Model+del)
@@ -205,6 +206,21 @@ Get all objects which the comparator returns true
 **Example**  
 ```js
 const model = new Model()const list = model.findAll(item => item.role === 'admin').map(({ id, data, index }) => {  return { id, ...data, ...index }})console.log(list)
+```
+<a name="Model+keysOf"></a>
+
+### model.keysOf(comparator) ⇒ <code>array</code>
+Keys of item matches criteria
+
+**Kind**: instance method of [<code>Model</code>](#Model)  
+
+| Param | Type |
+| --- | --- |
+| comparator | <code>function</code> | 
+
+**Example**  
+```js
+const model = new Model()const keys = model.keysOf(item => item.role === 'admin')console.log(keys)
 ```
 <a name="Model+countOf"></a>
 
