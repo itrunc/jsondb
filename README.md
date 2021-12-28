@@ -42,9 +42,11 @@ Create / Get a model
     * [.getFilePath(key, options)](#Model+getFilePath) ⇒ <code>string</code>
     * [.getMeta(key, options)](#Model+getMeta) ⇒ <code>object</code> \| <code>null</code>
     * [.get(key, options)](#Model+get) ⇒ <code>object</code> \| <code>null</code>
+    * [.mget(keys, options)](#Model+mget) ⇒ <code>array</code>
     * [.set(key, value, options)](#Model+set)
     * [.find(comparator)](#Model+find) ⇒ [<code>ModelFindReturns</code>](#ModelFindReturns) \| <code>null</code>
     * [.findAll(comparator, options)](#Model+findAll) ⇒ [<code>Array.&lt;ModelFindReturns&gt;</code>](#ModelFindReturns)
+    * [.countOf(comparator)](#Model+countOf) ⇒ <code>number</code>
     * [.mset(data, options)](#Model+mset)
     * [.del(key, options)](#Model+del)
     * [.delAll()](#Model+delAll)
@@ -140,6 +142,22 @@ Get object with specific key, null will be returned if object not existed
 ```js
 const model = new Model()model.on('error', (func, err, { key } = {}) => console.log(func, key, err))const data = model.get('key1')console.log(data)
 ```
+<a name="Model+mget"></a>
+
+### model.mget(keys, options) ⇒ <code>array</code>
+Get objects with list of ID
+
+**Kind**: instance method of [<code>Model</code>](#Model)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| keys | <code>array</code> | ID list |
+| options | [<code>ModelGetOptions</code>](#ModelGetOptions) |  |
+
+**Example**  
+```js
+const model = new Model()model.on('error', (func, err, { key } = {}) => console.log(func, key, err))const data = model.mget(['key1', 'key2'])console.log(data)
+```
 <a name="Model+set"></a>
 
 ### model.set(key, value, options)
@@ -187,6 +205,21 @@ Get all objects which the comparator returns true
 **Example**  
 ```js
 const model = new Model()const list = model.findAll(item => item.role === 'admin').map(({ id, data, index }) => {  return { id, ...data, ...index }})console.log(list)
+```
+<a name="Model+countOf"></a>
+
+### model.countOf(comparator) ⇒ <code>number</code>
+Count of item matches criteria
+
+**Kind**: instance method of [<code>Model</code>](#Model)  
+
+| Param | Type |
+| --- | --- |
+| comparator | <code>function</code> | 
+
+**Example**  
+```js
+const model = new Model()const count = model.countOf(item => item.role === 'admin')console.log(count)
 ```
 <a name="Model+mset"></a>
 

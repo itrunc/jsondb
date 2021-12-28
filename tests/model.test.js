@@ -182,6 +182,15 @@ describe('Model', function() {
         })
     })
 
+    describe('#countOf', () => {
+        it('should return count of items with role as admin', () => {
+            const total = model.countOf()
+            expect(total).to.be.an('number').that.to.be.equal(model.count)
+            const count = model.countOf(item => /admin/i.test(item.role))
+            expect(count).to.be.an('number').that.to.be.lt(model.count)
+        })
+    })
+
     describe('#del', () => {
         it('should delete JSON file correctly', (done) => {
             const key = data.items[100].id
