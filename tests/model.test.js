@@ -74,7 +74,7 @@ describe('Model', function() {
             const before = fs2.readJsonSync(filePath)
             model.set(key, {
                 age: 10
-            }).then(data => {
+            }, { indexes: { birth: '2011-01-01' } }).then(data => {
                 expect(data).to.be.an('object').that.to.have.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age'])
                 data = fs2.readJsonSync(filePath)
                 expect(data).to.be.an('object').that.to.have.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age'])
@@ -84,6 +84,8 @@ describe('Model', function() {
                 expect(data.role).to.equal(before.role)
                 expect(data.createdAt).to.equal(before.createdAt)
                 expect(data.updatedAt).to.be.above(before.updatedAt)
+                const meta = model.getMeta(key)
+                expect(meta).to.be.an('object').that.to.have.all.keys(['role', 'birth'])
                 done()
             }).catch(done)
         })

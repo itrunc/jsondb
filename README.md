@@ -373,6 +373,7 @@ const schema = new Schema()const sub = schema.schema('test')
 | --- | --- | --- | --- |
 | [event] | <code>boolean</code> | <code>false</code> | Indicates whether event is triggered if not found |
 | [saveMeta] | <code>boolean</code> | <code>true</code> | Indicates whether meta file will be updated immediate |
+| [indexes] | <code>object</code> | <code>{}</code> | Additional indexes to save in meta when saving the item |
 
 <a name="ModelFindReturns"></a>
 
