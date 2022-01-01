@@ -1,6 +1,6 @@
 {
   "name": "@itrunc/jsondb",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "private": false,
   "description": "Storage in filesystem with JSON file for NodeJS",
   "main": "index.js",
