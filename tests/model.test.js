@@ -15,7 +15,8 @@ describe('Model', function() {
         rules: {
             name: [{ required: true }]
         },
-        indexes: ['role']
+        indexes: ['role'],
+        audit: true
     })
     const key = Mock.mock('@word(10)')
     const data = Mock.mock({
@@ -51,7 +52,7 @@ describe('Model', function() {
     })
 
     describe('#set', () => {
-        it('should create JSON file correctly', (done) => {
+        it(`should create JSON file correctly for ${key}`, (done) => {
             model.set(key, Mock.mock({
                 name: '@first @last',
                 role: '@pick(["Developer", "Admin"])'
@@ -69,7 +70,7 @@ describe('Model', function() {
             }).catch(done)
         })
 
-        it('should update JSON file correctly', (done) => {
+        it(`should update JSON file correctly for ${key}`, (done) => {
             const filePath = model.getFilePath(key)
             const before = fs2.readJsonSync(filePath)
             model.set(key, {
@@ -77,7 +78,7 @@ describe('Model', function() {
             }, { indexes: { birth: '2011-01-01' } }).then(data => {
                 expect(data).to.be.an('object').that.to.have.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age'])
                 data = fs2.readJsonSync(filePath)
-                expect(data).to.be.an('object').that.to.have.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age'])
+                expect(data).to.be.an('object').that.to.have.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age', '__audit__'])
                 // expect(data.id).to.equal(key)
                 expect(data.age).to.be.a('number').that.to.equal(10)
                 expect(data.name).to.equal(before.name)
@@ -86,6 +87,18 @@ describe('Model', function() {
                 expect(data.updatedAt).to.be.above(before.updatedAt)
                 const meta = model.getMeta(key)
                 expect(meta).to.be.an('object').that.to.have.all.keys(['role', 'birth'])
+                done()
+            }).catch(done)
+        })
+
+        it(`should update audit correctly for ${key}`, (done) => {
+            const filePath = model.getFilePath(key)
+            model.set(key, {
+                age: 11
+            }).then(data => {
+                data = fs2.readJsonSync(filePath)
+                expect(data).to.be.an('object').that.to.have.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age', '__audit__'])
+                expect(data.__audit__).to.be.an('array').that.to.have.lengthOf(2)
                 done()
             }).catch(done)
         })
