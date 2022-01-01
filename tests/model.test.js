@@ -149,8 +149,11 @@ describe('Model', function() {
         it('should get data from JSON file correctly if existed', () => {
             const data = model.get(key)
             expect(data).to.be.an('object').that.to.have.any.keys(['name', 'role', 'createdAt', 'updatedAt'])
+            expect(data).to.be.an('object').that.not.to.have.any.keys(['__audit__'])
             // expect(data.name).to.equal(savedData.name)
             // expect(data.role).to.equal(savedData.role)
+            const data2 = model.get(key, { includeAllFields: true })
+            expect(data2).to.be.an('object').that.to.have.any.keys(['__audit__'])
         })
         it('should return null if not existed', () => {
             const data = model.get('ttt')
