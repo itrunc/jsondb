@@ -57,14 +57,14 @@ describe('Model', function() {
                 name: '@first @last',
                 role: '@pick(["Developer", "Admin"])'
             })).then(data => {
-                expect(data).to.be.an('object').that.to.have.all.keys(['name', 'role', 'createdAt', 'updatedAt'])
+                expect(data).to.be.an('object').that.to.include.all.keys(['name', 'role', 'createdAt', 'updatedAt'])
                 // expect(data.id).to.equal(key)
                 expect(model.meta.data[key]).to.be.an('object').that.not.to.be.null
                 const filePath = model.getFilePath(key)
                 const fileCreated = fs2.pathExistsSync(filePath)
                 expect(fileCreated).to.be.true
                 data = fs2.readJsonSync(filePath)
-                expect(data).to.be.an('object').that.to.have.all.keys(['name', 'role', 'createdAt', 'updatedAt'])
+                expect(data).to.be.an('object').that.to.include.all.keys(['name', 'role', 'createdAt', 'updatedAt'])
                 // expect(data.id).to.equal(key)
                 done()
             }).catch(done)
@@ -75,10 +75,10 @@ describe('Model', function() {
             const before = fs2.readJsonSync(filePath)
             model.set(key, {
                 age: 10
-            }, { indexes: { birth: '2011-01-01' } }).then(data => {
-                expect(data).to.be.an('object').that.to.have.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age'])
+            }, { indexes: { birth: '2011-01-01' }, who: 'me' }).then(data => {
+                expect(data).to.be.an('object').that.to.include.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age'])
                 data = fs2.readJsonSync(filePath)
-                expect(data).to.be.an('object').that.to.have.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age', '__audit__'])
+                expect(data).to.be.an('object').that.to.include.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age', '__audit__'])
                 // expect(data.id).to.equal(key)
                 expect(data.age).to.be.a('number').that.to.equal(10)
                 expect(data.name).to.equal(before.name)
@@ -86,7 +86,7 @@ describe('Model', function() {
                 expect(data.createdAt).to.equal(before.createdAt)
                 expect(data.updatedAt).to.be.above(before.updatedAt)
                 const meta = model.getMeta(key)
-                expect(meta).to.be.an('object').that.to.have.all.keys(['role', 'birth'])
+                expect(meta).to.be.an('object').that.to.include.all.keys(['role', 'birth'])
                 done()
             }).catch(done)
         })
@@ -97,7 +97,7 @@ describe('Model', function() {
                 age: 11
             }).then(data => {
                 data = fs2.readJsonSync(filePath)
-                expect(data).to.be.an('object').that.to.have.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age', '__audit__'])
+                expect(data).to.be.an('object').that.to.include.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age', '__audit__'])
                 expect(data.__audit__).to.be.an('array').that.to.have.lengthOf(2)
                 done()
             }).catch(done)

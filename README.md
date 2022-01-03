@@ -366,6 +366,7 @@ const schema = new Schema()const sub = schema.schema('test')
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | [event] | <code>boolean</code> | <code>false</code> | Indicates whether event is triggered if not found |
+| [includeAllFields] | <code>boolean</code> | <code>false</code> | Indicates whether the hidden fields are included in return |
 
 <a name="ModelDelOptions"></a>
 
@@ -389,6 +390,7 @@ const schema = new Schema()const sub = schema.schema('test')
 | --- | --- | --- | --- |
 | [event] | <code>boolean</code> | <code>false</code> | Indicates whether event is triggered if not found |
 | [saveMeta] | <code>boolean</code> | <code>true</code> | Indicates whether meta file will be updated immediate |
+| [who] | <code>string</code> \| <code>undefined</code> |  | For createdBy and updatedBy |
 | [indexes] | <code>object</code> | <code>{}</code> | Additional indexes to save in meta when saving the item |
 
 <a name="ModelFindReturns"></a>
