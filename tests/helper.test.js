@@ -45,8 +45,11 @@ describe('Helper', function() {
   
     const obj5 = { id: 1, name: 'Ben', age: 10, photo: { url: 'url1' } }
     const obj51 = { id: 1, name: 'Ben', age: 10, photo: { url: 'url1' } }
+    const obj52 = { name: 'Ben', age: 10, photo: { url: 'url1' } }
     const obj6 = { id: 1, name: 'Ben', age: 10, photo: { url: 'url2' } }
+    const obj61 = { name: 'Ben', age: 10, photo: { url: 'url2' } }
     const obj7 = { id: 1, name: 'Ben', age: 10, photo: { url: 'url2', size: 'small' } }
+    const obj71 = { name: 'Ben', age: 10, photo: { url: 'url2', size: 'small' } }
     it('should return as expected if sub object included', () => {
       const result_4_5 = objectDiff(obj4, obj5)
       expect(result_4_5).to.be.an('object').that.to.have.all.keys(['k', 'b', 'a'])
@@ -56,11 +59,11 @@ describe('Helper', function() {
       expect(result_5_51).to.be.an('object').that.to.have.all.keys(['k', 'b', 'a'])
       expect(result_5_51.k).to.be.an('array').that.to.be.empty
   
-      const result_5_6 = objectDiff(obj5, obj6)
+      const result_5_6 = objectDiff(obj52, obj61)
       expect(result_5_6).to.be.an('object').that.to.have.all.keys(['k', 'b', 'a'])
       expect(result_5_6.k).to.be.an('array').that.to.have.lengthOf(1).that.to.include('photo')
   
-      const result_7_6 = objectDiff(obj7, obj6)
+      const result_7_6 = objectDiff(obj71, obj61)
       expect(result_7_6).to.be.an('object').that.to.have.all.keys(['k', 'b', 'a'])
       expect(result_7_6.k).to.be.an('array').that.to.have.lengthOf(1).that.to.include('photo')
     })
@@ -70,7 +73,8 @@ describe('Helper', function() {
     const obj82 = { id: 1, name: 'Ben', age: 10, photos: ['url1', 'url2'] }
     const obj83 = { id: 1, name: 'Ben', age: 10, photos: ['url2', 'url1'] }
     const obj9 = { id: 1, name: 'Ben', age: 10, photos: [{ url: 'url2' }] }
-    const obj10 = { id: 1, name: 'Ben', age: 10, photos: [{ url: 'url2' }, { url: 'url1' }] }
+    const obj91 = { name: 'Ben', age: 10, photos: [{ url: 'url2' }] }
+    const obj10 = { name: 'Ben', age: 10, photos: [{ url: 'url2' }, { url: 'url1' }] }
     it('should return as expected if array included', () => {
       const result_7_8 = objectDiff(obj7, obj8)
       expect(result_7_8).to.be.an('object').that.to.have.all.keys(['k', 'b', 'a'])
@@ -90,7 +94,7 @@ describe('Helper', function() {
       expect(result_8_9).to.be.an('object').that.to.have.all.keys(['k', 'b', 'a'])
       expect(result_8_9.k).to.be.an('array').that.to.be.empty
   
-      const result_9_10 = objectDiff(obj9, obj10)
+      const result_9_10 = objectDiff(obj91, obj10)
       expect(result_9_10).to.be.an('object').that.to.have.all.keys(['k', 'b', 'a'])
       expect(result_9_10.k).to.be.an('array').that.to.have.lengthOf(1).that.to.include('photos')
     })
