@@ -9,7 +9,7 @@ const { instance } = require('./utils')
 const DATAPATH = path.resolve(__dirname, '.data', instance)
 fs2.ensureDir(DATAPATH)
 
-const PASSWORD = ''
+const PASSWORD = '123456'
 
 describe('Model', function() {
     this.timeout(0)
