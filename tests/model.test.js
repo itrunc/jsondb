@@ -237,4 +237,15 @@ describe('Model', function() {
             }).catch(done)
         })
     })
+
+    describe('#buildIndex', () => {
+        it('should build index correctly', () => {
+            const model = new Model(folder, {
+                indexes: ['role', 'name']
+            })
+            const count = model.count
+            model.buildIndex()
+            expect(model.countOf(i => i.name)).equal(count)
+        })
+    })
 })
