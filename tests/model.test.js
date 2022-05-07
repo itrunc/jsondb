@@ -3,10 +3,13 @@ const fs2 = require('fs-extra')
 const { expect } = require('chai')
 const Mock = require('mockjs')
 const { Model } = require('../index')
+const { readJsonSync } = require('../lib/helper')
 const { instance } = require('./utils')
 
 const DATAPATH = path.resolve(__dirname, '.data', instance)
 fs2.ensureDir(DATAPATH)
+
+const PASSWORD = ''
 
 describe('Model', function() {
     this.timeout(0)
@@ -16,7 +19,8 @@ describe('Model', function() {
             name: [{ required: true }]
         },
         indexes: ['role'],
-        audit: true
+        audit: true,
+        encrypt: PASSWORD
     })
     const key = Mock.mock('@word(10)')
     const data = Mock.mock({
@@ -63,7 +67,7 @@ describe('Model', function() {
                 const filePath = model.getFilePath(key)
                 const fileCreated = fs2.pathExistsSync(filePath)
                 expect(fileCreated).to.be.true
-                data = fs2.readJsonSync(filePath)
+                data = readJsonSync(filePath, PASSWORD)
                 expect(data).to.be.an('object').that.to.include.all.keys(['name', 'role', 'createdAt', 'updatedAt'])
                 // expect(data.id).to.equal(key)
                 done()
@@ -72,12 +76,12 @@ describe('Model', function() {
 
         it(`should update JSON file correctly for ${key}`, (done) => {
             const filePath = model.getFilePath(key)
-            const before = fs2.readJsonSync(filePath)
+            const before = readJsonSync(filePath, PASSWORD)
             model.set(key, {
                 age: 10
             }, { indexes: { birth: '2011-01-01' }, who: 'me' }).then(data => {
                 expect(data).to.be.an('object').that.to.include.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age'])
-                data = fs2.readJsonSync(filePath)
+                data = readJsonSync(filePath, PASSWORD)
                 expect(data).to.be.an('object').that.to.include.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age', '__audit__'])
                 // expect(data.id).to.equal(key)
                 expect(data.age).to.be.a('number').that.to.equal(10)
@@ -96,7 +100,7 @@ describe('Model', function() {
             model.set(key, {
                 age: 11
             }).then(data => {
-                data = fs2.readJsonSync(filePath)
+                data = readJsonSync(filePath, PASSWORD)
                 expect(data).to.be.an('object').that.to.include.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age', '__audit__'])
                 expect(data.__audit__).to.be.an('array').that.to.have.lengthOf(2)
                 done()
@@ -241,7 +245,8 @@ describe('Model', function() {
     describe('#buildIndex', () => {
         it('should build index correctly', () => {
             const model = new Model(folder, {
-                indexes: ['role', 'name']
+                indexes: ['role', 'name'],
+                encrypt: PASSWORD
             })
             const count = model.count
             model.buildIndex()
