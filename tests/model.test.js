@@ -10,6 +10,7 @@ const DATAPATH = path.resolve(__dirname, '.data', instance)
 fs2.ensureDir(DATAPATH)
 
 const PASSWORD = '123456'
+const ITEM_COUNT = 10000
 
 describe('Model', function() {
     this.timeout(0)
@@ -23,17 +24,18 @@ describe('Model', function() {
         encrypt: PASSWORD
     })
     const key = Mock.mock('@word(10)')
-    const data = Mock.mock({
-        'items|10000': [{
-            id: '@word(8)',
-            name: '@first @last',
-            role: '@pick(["Developer", "Admin"])'
-        }],
+    const mockObject = {
         'fail|10': [{
             id: '@word(8)',
             role: '@pick(["Developer", "Admin"])'
         }]
-    })
+    }
+    mockObject[`items|${ITEM_COUNT}`] = [{
+        id: '@word(8)',
+        name: '@first @last',
+        role: '@pick(["Developer", "Admin"])'
+    }]
+    const data = Mock.mock(mockObject)
 
     describe('#constructor', () => {
         it(`should create an instance of model as well as the folder ${folder}`, () => {
@@ -112,9 +114,9 @@ describe('Model', function() {
         it('should bulk set data correctly', (done) => {
             model.mset(data.items.concat(data.fail)).then(result => {
                 expect(result).to.be.an('object').that.to.have.all.keys(['success', 'failure'])
-                expect(result.success).to.be.an('array').that.to.have.lengthOf(10000)
+                expect(result.success).to.be.an('array').that.to.have.lengthOf(ITEM_COUNT)
                 expect(result.failure).to.be.an('array').that.to.have.lengthOf(10)
-                expect(model.count).to.be.an('number').that.to.be.gt(10000)
+                expect(model.count).to.be.an('number').that.to.be.gt(ITEM_COUNT)
                 done()
             }).catch(done)
         })
