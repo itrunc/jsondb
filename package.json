@@ -8,7 +8,9 @@
     "test": "mocha tests/**/*.test.js --reporter mochawesome --reporter-options reportDir=tests/results/general,reportFilename=report --exit",
     "test:single": "cross-env DEBUG=\"*jsondb:*\" mocha tests/index.js --reporter mochawesome --reporter-options reportDir=tests/results/single,reportFilename=report --exit",
     "test:helper": "cross-env DEBUG=\"*jsondb:*\" mocha tests/helper.test.js --reporter mochawesome --reporter-options reportDir=tests/results/helper,reportFilename=report --exit",
-    "test:utils": "mocha tests/utils.test.js --reporter mochawesome --reporter-options reportDir=tests/results/utils,reportFilename=report --exit",
+    "test:schema": "cross-env DEBUG=\"*jsondb:schema:*\" mocha tests/schema.test.js --reporter mochawesome --reporter-options reportDir=tests/results/schema,reportFilename=report --exit",
+    "test:model": "cross-env DEBUG=\"*jsondb:model:*\" mocha tests/model.test.js --reporter mochawesome --reporter-options reportDir=tests/results/model,reportFilename=report --exit",
+    "test:utils": "cross-env DEBUG=\"*jsondb:utils:*\" mocha tests/utils.test.js --reporter mochawesome --reporter-options reportDir=tests/results/utils,reportFilename=report --exit",
     "docs": "jsdoc2md -c jsdoc.json lib/*.js > README.md",
     "pub": "npm publish --access public"
   },
