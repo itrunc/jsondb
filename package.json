@@ -8,6 +8,7 @@
     "test": "mocha tests/**/*.test.js --reporter mochawesome --reporter-options reportDir=tests/results/general,reportFilename=report --exit",
     "test:single": "cross-env DEBUG=\"*jsondb:*\" mocha tests/index.js --reporter mochawesome --reporter-options reportDir=tests/results/single,reportFilename=report --exit",
     "test:helper": "cross-env DEBUG=\"*jsondb:*\" mocha tests/helper.test.js --reporter mochawesome --reporter-options reportDir=tests/results/helper,reportFilename=report --exit",
+    "test:utils": "mocha tests/utils.test.js --reporter mochawesome --reporter-options reportDir=tests/results/utils,reportFilename=report --exit",
     "docs": "jsdoc2md -c jsdoc.json lib/*.js > README.md",
     "pub": "npm publish --access public"
   },
@@ -27,7 +28,8 @@
   "dependencies": {
     "async-validator": "^4.0.7",
     "debug": "^4.3.2",
-    "fs-extra": "9.1.0"
+    "fs-extra": "9.1.0",
+    "moment": "^2.29.4"
   },
   "devDependencies": {
     "chai": "^4.3.4",
