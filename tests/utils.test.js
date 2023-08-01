@@ -184,6 +184,16 @@ describe('JsondbUtils', function() {
     })
   })
 
+  describe('#getObjectAudits', () => {
+    it('should get audits of specific object as expected', (done) => {
+      const objectId = 'admin'
+      accountSchema.getObjectAudits('roles', objectId).then(audits => {
+        expect(audits).to.be.an('array')
+        done()
+      }).catch(done)
+    })
+  })
+
   describe('#getObjects', () => {
     it('should get objects as expected', (done) => {
       const list = ['ben', `nonexist_${Date.now()}`]
