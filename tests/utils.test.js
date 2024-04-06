@@ -241,7 +241,7 @@ describe('JsondbUtils', function() {
           desc: { calc: 'like', value: 'good' } // desc not in index
         }
       }).then(objects => {
-        expect(objects).to.be.an('array').that.has.lengthOf(2)
+        expect(objects).to.be.an('array').that.has.lengthOf(2).to.satisfy((objects) => objects.every(item => item.id && /good/.test(item.desc)))
         done()
       }).catch(done)
     })
