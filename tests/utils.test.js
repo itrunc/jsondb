@@ -197,9 +197,10 @@ describe('JsondbUtils', function() {
   describe('#getObjects', () => {
     it('should get objects as expected', (done) => {
       const list = ['ben', `nonexist_${Date.now()}`]
-      accountSchema.getObjects('users', list).then(({ success, failure }) => {
-        expect(success).to.be.an('array').that.to.have.lengthOf(1)
-        expect(failure).to.be.an('array').that.to.have.lengthOf(1)
+      accountSchema.getObjects('users', list).then(data => {
+        expect(data).to.be.an('object').that.to.include.all.keys(['success', 'failure'])
+        expect(data.success).to.be.an('array').that.has.lengthOf(1).to.satisfy((objects) => objects.every(item => item.id === 'ben'))
+        expect(data.failure).to.be.an('array').that.has.lengthOf(1).to.satisfy((objects) => objects.every(item => item.id && item.reason))
         done()
       }).catch(done)
     })
