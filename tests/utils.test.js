@@ -306,10 +306,11 @@ describe('JsondbUtils', function() {
     it('should delete objects by id list as expected', (done) => {
       const model = accountSchema.getModel('users')
       const countBeforeDeleted = model.count
-      accountSchema.deleteObjectsByID('users', ['nonexist', 'nonexist2', 'nonexist3']).then(({ success, failure }) => {
-        expect(success).to.be.an('array').that.has.lengthOf(1)
-        expect(failure).to.be.an('array').that.has.lengthOf(2)
-        expect(model.count).to.equal(countBeforeDeleted - success.length)
+      accountSchema.deleteObjectsByID('users', ['nonexist', 'nonexist2', 'nonexist3']).then(data => {
+        expect(data).to.be.an('object').that.to.include.all.keys(['success', 'failure'])
+        expect(data.success).to.be.an('array').that.has.lengthOf(1)
+        expect(data.failure).to.be.an('array').that.has.lengthOf(2).to.satisfy(objects => objects.every(item => item.reason))
+        expect(model.count).to.equal(countBeforeDeleted - data.success.length)
         done()
       }).catch(done)
     })
@@ -321,10 +322,11 @@ describe('JsondbUtils', function() {
       const countBeforeDeleted = model.count
       accountSchema.deleteObjectsWithCriteria('users', {
         role: 'developer'
-      }).then(({ success, failure }) => {
-        expect(success).to.be.an('array').that.has.lengthOf(1)
-        expect(failure).to.be.an('array').that.to.be.empty
-        expect(model.count).to.equal(countBeforeDeleted - success.length)
+      }).then(data => {
+        expect(data).to.be.an('object').that.to.include.all.keys(['success', 'failure'])
+        expect(data.success).to.be.an('array').that.has.lengthOf(1)
+        expect(data.failure).to.be.an('array').that.to.be.empty
+        expect(model.count).to.equal(countBeforeDeleted - data.success.length)
         done()
       }).catch(done)
     })
