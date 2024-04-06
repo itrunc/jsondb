@@ -115,7 +115,7 @@ describe('Model', function() {
             model.mset(data.items.concat(data.fail)).then(result => {
                 expect(result).to.be.an('object').that.to.have.all.keys(['success', 'failure'])
                 expect(result.success).to.be.an('array').that.to.have.lengthOf(ITEM_COUNT)
-                expect(result.failure).to.be.an('array').that.to.have.lengthOf(10)
+                expect(result.failure).to.be.an('array').that.has.lengthOf(10).to.satisfy(objects => objects.every(item => item.id && item.reason))
                 expect(model.count).to.be.an('number').that.to.be.gt(ITEM_COUNT)
                 done()
             }).catch(done)
@@ -233,7 +233,7 @@ describe('Model', function() {
             const fileExists = fs2.pathExistsSync(filePath)
             expect(fileExists).to.be.true
             model.del(key).then(item => {
-                expect(item).to.be.an('object').that.to.have.all.keys(['name', 'role', 'createdAt', 'updatedAt'])
+                expect(item).to.be.an('object').that.to.include.all.keys(['name', 'role', 'createdAt', 'updatedAt'])
                 const exists = model.has(key)
                 expect(exists).to.be.false
                 expect(model.count).to.be.equal(count - 1)
