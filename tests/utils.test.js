@@ -68,7 +68,7 @@ describe('JsondbUtils', function() {
   describe('#createObject', () => {
 
     it(`should create object as expected`, (done) => {
-      accountSchema.createObject('roles', role).then(item => {
+      accountSchema.createObject('roles', role, { user: { id: 'tester' }}).then(item => {
         expect(item).to.be.an('object').that.includes.all.keys(['id', 'name'])
         expect(item.id).to.equal(role.id)
         expect(item.name).to.equal(role.name)
@@ -101,7 +101,7 @@ describe('JsondbUtils', function() {
   describe('#updateObject', () => {
     it('should update object as expected', (done) => {
       const desc = 'Super admin has all permissions!'
-      accountSchema.updateObject('roles', role.id, { desc }).then(item => {
+      accountSchema.updateObject('roles', role.id, { desc }, { user: { id: 'tester2' }}).then(item => {
         expect(item).to.be.an('object').that.includes.all.keys(['id', 'name', 'desc'])
         expect(item.id).to.equal(role.id)
         expect(item.name).to.equal(role.name)
@@ -160,7 +160,7 @@ describe('JsondbUtils', function() {
       const objectId = 'admin'
       accountSchema.getObject('roles', objectId).then(item => {
         expect(item).to.be.an('object').that.includes.all.keys(['id', 'name'])
-        expect(item).not.have.any.keys(['__audit__'])
+        expect(item).not.have.any.keys(['_createdBy_', '_updatedBy_'])
         expect(item.id).to.equal(objectId)
         done()
       }).catch(done)
@@ -177,7 +177,7 @@ describe('JsondbUtils', function() {
     it('should get object with all fields', (done) => {
       const objectId = 'admin'
       accountSchema.getObject('roles', objectId, { includeAllFields: true }).then(item => {
-        expect(item).to.be.an('object').that.includes.all.keys(['id', 'name', '__audit__'])
+        expect(item).to.be.an('object').that.includes.all.keys(['id', 'name', 'createdAt', 'updatedAt', 'desc', '_createdBy_', '_updatedBy_'])
         expect(item.id).to.equal(objectId)
         done()
       }).catch(done)

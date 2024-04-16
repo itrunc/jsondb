@@ -84,7 +84,7 @@ describe('Model', function() {
             }, { indexes: { birth: '2011-01-01' }, who: 'me' }).then(data => {
                 expect(data).to.be.an('object').that.to.include.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age'])
                 data = readJsonSync(filePath, PASSWORD)
-                expect(data).to.be.an('object').that.to.include.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age', '__audit__'])
+                expect(data).to.be.an('object').that.to.include.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age'])
                 // expect(data.id).to.equal(key)
                 expect(data.age).to.be.a('number').that.to.equal(10)
                 expect(data.name).to.equal(before.name)
@@ -97,17 +97,17 @@ describe('Model', function() {
             }).catch(done)
         })
 
-        it(`should update audit correctly for ${key}`, (done) => {
-            const filePath = model.getFilePath(key)
-            model.set(key, {
-                age: 11
-            }).then(data => {
-                data = readJsonSync(filePath, PASSWORD)
-                expect(data).to.be.an('object').that.to.include.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age', '__audit__'])
-                expect(data.__audit__).to.be.an('array').that.to.have.lengthOf(2)
-                done()
-            }).catch(done)
-        })
+        // it(`should update audit correctly for ${key}`, (done) => {
+        //     const filePath = model.getFilePath(key)
+        //     model.set(key, {
+        //         age: 11
+        //     }).then(data => {
+        //         data = readJsonSync(filePath, PASSWORD)
+        //         expect(data).to.be.an('object').that.to.include.all.keys(['name', 'role', 'createdAt', 'updatedAt', 'age', '__audit__'])
+        //         expect(data.__audit__).to.be.an('array').that.to.have.lengthOf(2)
+        //         done()
+        //     }).catch(done)
+        // })
     })
 
     describe('#mset', () => {
@@ -155,11 +155,11 @@ describe('Model', function() {
         it('should get data from JSON file correctly if existed', () => {
             const data = model.get(key)
             expect(data).to.be.an('object').that.to.have.any.keys(['name', 'role', 'createdAt', 'updatedAt'])
-            expect(data).to.be.an('object').that.not.to.have.any.keys(['__audit__'])
+            expect(data).to.be.an('object').that.not.to.have.any.keys(['_createdBy_', '_updatedBy_'])
             // expect(data.name).to.equal(savedData.name)
             // expect(data.role).to.equal(savedData.role)
             const data2 = model.get(key, { includeAllFields: true })
-            expect(data2).to.be.an('object').that.to.have.any.keys(['__audit__'])
+            expect(data2).to.be.an('object').that.to.have.any.keys(['_createdBy_', '_updatedBy_'])
         })
         it('should return null if not existed', () => {
             const data = model.get('ttt')
